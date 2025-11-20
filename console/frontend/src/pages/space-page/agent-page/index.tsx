@@ -1,6 +1,6 @@
 import React, { memo, useState, useEffect, useRef, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { message, Select, Tooltip } from 'antd';
+import { message, Select } from 'antd';
 import { throttle } from 'lodash';
 import { enableBotFavorite } from '@/services/agent'; // NOTE: 需更换接口
 import { useTranslation } from 'react-i18next';
@@ -172,51 +172,15 @@ function index() {
     [searchValue]
   );
 
-  function jumpChat(e: React.MouseEvent<HTMLDivElement>, id: string): void {
-    e.stopPropagation();
-    navigate(`/space/bot/${id}/chat`);
-  }
-
-  function jumpConfig(e: React.MouseEvent<HTMLDivElement>, id: string): void {
-    e.stopPropagation();
-    navigate('/space/config/' + id + '/base');
-  }
-
-  const handleBotFavorite = useCallback(
-    throttle(robot => {
-      const params = {
-        botId: robot.id,
-        favoriteFlag: robot?.isFavorite ? 1 : 0,
-      };
-
-      enableBotFavorite(params).then(data => {
-        setRobots((robots: any[]) => {
-          const currentBot = robots.find((item: any) => item.id === robot.id);
-          currentBot.isFavorite = !currentBot.isFavorite;
-          currentBot.favoriteCount = data;
-
-          return [...robots];
-        });
-      });
-    }, 1000),
-    []
-  );
-
   /** 复制操作 */
   const copyBotNow = useCallback(
     debounce((botId?: number) => {
       copyBot({ botId })
         .then(() => {
           message.success(t('agentPage.agentPage.copySuccess'));
-          // if (searchValue) {
-          //   setSearchValue('');
-          // } else {
-          //   getRobots();
-          // }
           getRobots();
         })
         .catch(err => {
-          console.error(err);
           err?.msg && message.error(err.msg);
         });
     }, 500),
@@ -271,21 +235,6 @@ function index() {
               suffixIcon={<img src={formSelect} className="w-4 h-4 " />}
               className="search-select"
               style={{ height: 32, width: 160, marginRight: '8px' }}
-              value={version}
-              onChange={value => {
-                setVersion(value);
-                setPageIndex(1);
-              }}
-              options={[
-                { label: t('agentPage.agentPage.allTypes'), value: 0 },
-                { label: t('agentPage.agentPage.instructionType'), value: 1 },
-                { label: t('agentPage.agentPage.workflowType'), value: 3 },
-              ]}
-            />
-            <Select
-              suffixIcon={<img src={formSelect} className="w-4 h-4 " />}
-              className="search-select"
-              style={{ height: 32, width: 160, marginRight: '8px' }}
               value={sort}
               onChange={value => {
                 setSort(value);
@@ -300,21 +249,6 @@ function index() {
                   label: t('agentPage.agentPage.sortByUpdateTime'),
                   value: 'updateTime',
                 },
-              ]}
-            />
-            <Select
-              suffixIcon={<img src={formSelect} className="w-4 h-4 " />}
-              className="search-select"
-              style={{ height: 32, width: 160, marginRight: '8px' }}
-              value={status}
-              onChange={value => {
-                setStatus(value);
-                setPageIndex(1);
-              }}
-              options={[
-                { label: t('agentPage.agentPage.allStatus'), value: 0 },
-                { label: t('agentPage.agentPage.published'), value: 1 },
-                { label: t('agentPage.agentPage.unpublished'), value: 2 },
               ]}
             />
             <RetractableInput

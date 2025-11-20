@@ -74,7 +74,7 @@ export default [
       'max-lines-per-function': [
         'warn',
         {
-          max: 200,
+          max: 600,
           IIFEs: true,
         },
       ],

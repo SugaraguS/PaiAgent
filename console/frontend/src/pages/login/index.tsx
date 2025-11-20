@@ -23,7 +23,7 @@ const LoginPage = () => {
           localStorage.setItem('refreshToken', response.refreshToken);
         }
         message.success('登录成功！');
-        navigate('/home');
+        navigate('/');
       } else {
         message.error('登录失败，请重试');
       }
